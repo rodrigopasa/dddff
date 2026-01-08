@@ -1,0 +1,24 @@
+# Usa uma versão leve e recente do Node.js
+FROM node:18-alpine
+
+# Cria a pasta do app dentro do container
+WORKDIR /app
+
+# Copia os arquivos de dependência primeiro (para cachear a instalação)
+COPY package.json ./
+
+# Instala as dependências
+RUN npm install --production
+
+# Copia o restante do código (server.js, index.html, public, etc)
+COPY . .
+
+# Cria a pasta de dados (para garantir que existe, embora o server.js também crie)
+RUN mkdir -p data
+
+# Define a porta padrão (o Coolify vai ler isso)
+ENV PORT=3000
+EXPOSE 3000
+
+# Comando para iniciar o servidor
+CMD ["npm", "start"]
